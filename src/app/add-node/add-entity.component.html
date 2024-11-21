@@ -1,0 +1,10 @@
+<form [formGroup]="formGroup" (ngSubmit)="submit()">
+  <input
+    type="text"
+    name="name"
+    [formControl]="formGroup.controls.name"
+    [placeholder]="placeholder()"
+    required
+  >
+  <button type="submit" class="btn btn-primary">Add</button>
+</form>
