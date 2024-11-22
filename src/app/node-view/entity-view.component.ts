@@ -19,11 +19,10 @@ export class EntityViewComponent {
   readonly entityType = input.required<EntityType>();
   readonly entities = input.required<Entity[] | null>();
 
-  // TODO provide multiple child types for dropdown menu
   /**
    * Child type that may be added to this entity.
    */
-  readonly childType = input.required<EntityType | null>();
+  readonly allowedChildTypes = input.required<EntityType[] | null>();
 
   private readonly store = inject(Store);
 

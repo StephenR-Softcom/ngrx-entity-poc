@@ -2,13 +2,7 @@ import { ActionReducer, ActionReducerMap, combineReducers, createReducer, on } f
 import { entityConfig } from './entity-config';
 import { deleteReducer } from './delete-reducer';
 import { createEntityReducer } from './entity-reducer';
-import {
-  appInitialState,
-  AppState,
-  entityL1InitialState,
-  entityL2InitialState,
-  entityL3InitialState
-} from './app.state';
+import { appInitialState, AppState, } from './app.state';
 import { resetToInitialState } from './actions';
 import { cloneDeep } from 'lodash';
 
@@ -30,9 +24,10 @@ export const resetToInitialStateReducer: ActionReducer<AppState> = createReducer
 // ---
 
 const entitySliceReducerMap: ActionReducerMap<AppState> = {
-  entityL1: createEntityReducer(entityConfig.entityL1, entityL1InitialState),
-  entityL2: createEntityReducer(entityConfig.entityL2, entityL2InitialState),
-  entityL3: createEntityReducer(entityConfig.entityL3, entityL3InitialState),
+  entityL1: createEntityReducer(entityConfig.entityL1, appInitialState.entityL1),
+  entityL2: createEntityReducer(entityConfig.entityL2, appInitialState.entityL2),
+  entityL3: createEntityReducer(entityConfig.entityL3, appInitialState.entityL3),
+  entityL3Other: createEntityReducer(entityConfig.entityL3Other, appInitialState.entityL3Other),
 };
 const entitySliceReducer = combineReducers(entitySliceReducerMap, appInitialState);
 

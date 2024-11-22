@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Entity, EntityL1, EntityL2, EntityL3 } from './state/entity.types';
+import { Entity, EntityL1, EntityL2, EntityL3, EntityL3Other } from './state/entity.types';
 import { addEntity } from './state/actions';
 import { Store } from '@ngrx/store';
 
@@ -47,6 +47,7 @@ export class ExampleDataService {
       parent: { id: '1', type: 'entityL1', },
       children: [
         { id: '1-2-1', type: 'entityL3', },
+        { id: '1-2-2', type: 'entityL3Other', },
       ],
       rank: 2,
     };
@@ -57,7 +58,7 @@ export class ExampleDataService {
       parent: { id: '1-1', type: 'entityL2', },
       children: [],
       date: '1907-01-01',
-    }
+    };
     const entityL3_1_2_1: EntityL3 = {
       id: '1-2-1',
       type: 'entityL3',
@@ -65,7 +66,16 @@ export class ExampleDataService {
       parent: { id: '1-2', type: 'entityL2', },
       children: [],
       date: '1940-01-01',
-    }
+    };
+    const entityL3Other_1_2_2: EntityL3Other = {
+      id: '1-2-2',
+      type: 'entityL3Other',
+      name: 'Pop Rock',
+      parent: { id: '1-2', type: 'entityL2', },
+      children: [],
+      comment: 'Beatles music',
+    };
+
 
     const entityL1_2: EntityL1 = {
       id: '2',
@@ -83,6 +93,7 @@ export class ExampleDataService {
       parent: { id: '2', type: 'entityL1', },
       children: [
         { id: '2-1-1', type: 'entityL3', },
+        { id: '2-1-2', type: 'entityL3Other', },
       ],
       rank: 1,
     };
@@ -93,7 +104,15 @@ export class ExampleDataService {
       parent: { id: '2-1', type: 'entityL2', },
       children: [],
       date: '1947-01-01',
-    }
+    };
+    const entityL3Other_2_1_2: EntityL3Other = {
+      id: '2-1-2',
+      type: 'entityL3Other',
+      name: 'Thriller',
+      parent: { id: '2-1', type: 'entityL2', },
+      children: [],
+      comment: 'Scary',
+    };
 
     const entityL1_3: EntityL1 = {
       id: '3',
@@ -103,7 +122,7 @@ export class ExampleDataService {
       children: [
         { id: '3-1', type: 'entityL2', },
       ],
-    }
+    };
     const entityL2_3_1: EntityL2 = {
       id: '3-1',
       type: 'entityL2',
@@ -121,7 +140,7 @@ export class ExampleDataService {
       parent: { id: '3-1', type: 'entityL2', },
       children: [],
       date: '1934-01-01',
-    }
+    };
 
     const entities: Entity[] = [
       entityL1_1,
@@ -129,9 +148,11 @@ export class ExampleDataService {
       entityL2_1_2,
       entityL3_1_1_1,
       entityL3_1_2_1,
+      entityL3Other_1_2_2,
       entityL1_2,
       entityL2_2_1,
       entityL3_2_1_1,
+      entityL3Other_2_1_2,
       entityL1_3,
       entityL2_3_1,
       entityL3_3_1_1,

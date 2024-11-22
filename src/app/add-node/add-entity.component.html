@@ -1,10 +1,16 @@
-<form [formGroup]="formGroup" (ngSubmit)="submit()">
+<form [formGroup]="formGroup" (ngSubmit)="submit()" class="d-flex align-items-center">
+  <select [formControl]="formGroup.controls.childType" class="form-select me-2">
+    @for (type of entityTypes(); track type) {
+      <option [value]="type">{{ type }}</option>
+    }
+  </select>
   <input
     type="text"
     name="name"
+    class="form-control me-2"
     [formControl]="formGroup.controls.name"
     [placeholder]="placeholder()"
     required
   >
-  <button type="submit" class="btn btn-primary ms-1">Add</button>
+  <button type="submit" class="btn btn-primary">Add</button>
 </form>

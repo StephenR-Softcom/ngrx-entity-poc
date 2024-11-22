@@ -21,6 +21,10 @@ export interface EntityL3 extends Entity {
   date: string;
 }
 
+export interface EntityL3Other extends Entity {
+  comment: string;
+}
+
 /**
  * Reference to another entity, which has a relationship with this entity.
  */

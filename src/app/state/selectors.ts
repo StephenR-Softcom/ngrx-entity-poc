@@ -7,6 +7,7 @@ const selectAppState = createFeatureSelector<AppState>('app');
 export const selectEntityL1State = createSelector(selectAppState, state => state.entityL1);
 export const selectEntityL2State = createSelector(selectAppState, state => state.entityL2);
 export const selectEntityL3State = createSelector(selectAppState, state => state.entityL3);
+export const selectEntityL3OtherState = createSelector(selectAppState, state => state.entityL3Other);
 
 export const entityL1Adapter = entityConfig.entityL1.adapter;
 export const selectAllEntityL1Items = createSelector(
@@ -20,8 +21,14 @@ export const selectAllEntityL2Items = createSelector(
   entityL2Adapter.getSelectors().selectAll
 );
 
-const l3EntityAdapter = entityConfig.entityL3.adapter;
+const entityL3Adapter = entityConfig.entityL3.adapter;
 export const selectAllEntityL3Items = createSelector(
   selectEntityL3State,
-  l3EntityAdapter.getSelectors().selectAll
+  entityL3Adapter.getSelectors().selectAll
+);
+
+const entityL3OtherAdapter = entityConfig.entityL3Other.adapter;
+export const selectAllEntityL3OtherItems = createSelector(
+  selectEntityL3OtherState,
+  entityL3OtherAdapter.getSelectors().selectAll
 );

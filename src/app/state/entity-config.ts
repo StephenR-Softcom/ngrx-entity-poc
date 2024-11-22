@@ -1,5 +1,5 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
-import { Entity, EntityL1, EntityL2, EntityL3 } from './entity.types';
+import { Entity, EntityL1, EntityL2, EntityL3, EntityL3Other } from './entity.types';
 import { AppState, EntityType } from './app.state';
 
 /**
@@ -24,6 +24,10 @@ export const entityConfig: EntityConfigMap = {
   entityL3: {
     type: 'entityL3',
     adapter: createEntityAdapter<EntityL3>(),
+  },
+  entityL3Other: {
+    type: 'entityL3Other',
+    adapter: createEntityAdapter<EntityL3Other>(),
   },
   get: (type: EntityType) => entityConfig[type] as EntityConfig<Entity>,
 };

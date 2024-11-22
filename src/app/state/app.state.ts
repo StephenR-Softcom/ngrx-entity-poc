@@ -1,5 +1,5 @@
 import { EntityState } from '@ngrx/entity';
-import { EntityL1, EntityL2, EntityL3 } from './entity.types';
+import { EntityL1, EntityL2, EntityL3, EntityL3Other } from './entity.types';
 import { entityConfig } from './entity-config';
 
 export type EntityType = keyof AppState;
@@ -14,26 +14,33 @@ export interface AppState {
   entityL1: QuestionState<EntityL1>;
   entityL2: QuestionState<EntityL2>;
   entityL3: QuestionState<EntityL3>;
+  entityL3Other: QuestionState<EntityL3Other>;
 }
 
 // ---
 // Initial state
 // ---
 
-export const entityL1InitialState: QuestionState<EntityL1> = {
+const entityL1InitialState: QuestionState<EntityL1> = {
   ...entityConfig.entityL1.adapter.getInitialState(),
   synced: true,
 };
-export const entityL2InitialState: QuestionState<EntityL2> = {
+const entityL2InitialState: QuestionState<EntityL2> = {
   ...entityConfig.entityL2.adapter.getInitialState(),
   synced: true,
 }
-export const entityL3InitialState: QuestionState<EntityL3> = {
+const entityL3InitialState: QuestionState<EntityL3> = {
   ...entityConfig.entityL3.adapter.getInitialState(),
   synced: true,
 }
+const entityL3OtherInitialState: QuestionState<EntityL3Other> = {
+  ...entityConfig.entityL3Other.adapter.getInitialState(),
+  synced: true,
+}
+
 export const appInitialState: AppState = {
   entityL1: entityL1InitialState,
   entityL2: entityL2InitialState,
   entityL3: entityL3InitialState,
+  entityL3Other: entityL3OtherInitialState,
 };
