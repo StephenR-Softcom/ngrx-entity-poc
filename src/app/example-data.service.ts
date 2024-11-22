@@ -23,88 +23,103 @@ export class ExampleDataService {
     const entityL1_1: EntityL1 = {
       id: '1',
       type: 'entityL1',
-      parentId: null,
       name: 'John',
-      childNodeIds: new Set(['1-1', '1-2']),
+      parent: null,
+      children: [
+        { id: '1-1', type: 'entityL2', },
+        { id: '1-2', type: 'entityL2', },
+      ],
     };
     const entityL2_1_1: EntityL2 = {
       id: '1-1',
       type: 'entityL2',
-      parentId: '1',
       name: 'Wayne',
-      childNodeIds: new Set(['1-1-1']),
+      parent: { id: '1', type: 'entityL1', },
+      children: [
+        { id: '1-1-1', type: 'entityL3', },
+      ],
       rank: 1,
     };
     const entityL2_1_2: EntityL2 = {
       id: '1-2',
       type: 'entityL2',
-      parentId: '1',
       name: 'Lennon',
-      childNodeIds: new Set(['1-2-1']),
+      parent: { id: '1', type: 'entityL1', },
+      children: [
+        { id: '1-2-1', type: 'entityL3', },
+      ],
       rank: 2,
     };
     const entityL3_1_1_1: EntityL3 = {
       id: '1-1-1',
       type: 'entityL3',
-      parentId: '1-1',
       name: 'Actor',
-      childNodeIds: new Set(),
+      parent: { id: '1-1', type: 'entityL2', },
+      children: [],
       date: '1907-01-01',
     }
     const entityL3_1_2_1: EntityL3 = {
       id: '1-2-1',
       type: 'entityL3',
-      parentId: '1-2',
       name: 'Musician',
-      childNodeIds: new Set(),
+      parent: { id: '1-2', type: 'entityL2', },
+      children: [],
       date: '1940-01-01',
     }
 
     const entityL1_2: EntityL1 = {
       id: '2',
       type: 'entityL1',
-      parentId: null,
       name: 'Stephen',
-      childNodeIds: new Set(['2-1']),
+      parent: null,
+      children: [
+        { id: '2-1', type: 'entityL2', },
+      ],
     };
     const entityL2_2_1: EntityL2 = {
       id: '2-1',
       type: 'entityL2',
-      parentId: '2',
       name: 'King',
-      childNodeIds: new Set(['2-1-1']),
+      parent: { id: '2', type: 'entityL1', },
+      children: [
+        { id: '2-1-1', type: 'entityL3', },
+      ],
       rank: 1,
     };
     const entityL3_2_1_1: EntityL3 = {
       id: '2-1-1',
       type: 'entityL3',
-      parentId: '2-1',
       name: 'Author',
-      childNodeIds: new Set(),
+      parent: { id: '2-1', type: 'entityL2', },
+      children: [],
       date: '1947-01-01',
     }
 
     const entityL1_3: EntityL1 = {
       id: '3',
       type: 'entityL1',
-      parentId: null,
+      parent: null,
       name: 'Donald',
-      childNodeIds: new Set(['3-1']),
+      children: [
+        { id: '3-1', type: 'entityL2', },
+      ],
     }
     const entityL2_3_1: EntityL2 = {
       id: '3-1',
       type: 'entityL2',
-      parentId: '3',
       name: 'Duck',
-      childNodeIds: new Set(['3-1-1']),
+      parent: { id: '3', type: 'entityL1', },
+      children: [
+        { id: '3-1-1', type: 'entityL3', },
+      ],
       rank: 1,
     };
     const entityL3_3_1_1: EntityL3 = {
       id: '3-1-1',
       type: 'entityL3',
-      parentId: '3-1',
       name: 'Cartoon Character',
-      childNodeIds: new Set(),
+      parent: { id: '3-1', type: 'entityL2', },
+      children: [],
       date: '1934-01-01',
     }
 

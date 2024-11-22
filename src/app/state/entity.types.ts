@@ -2,15 +2,15 @@ import { EntityType } from './app.state';
 
 export interface Entity {
   id: string;
-  parentId: string | null;
   type: EntityType;
-  childNodeIds: Set<string>;
+  parent: EntityRef | null;
+  children: EntityRef[];
 
   name: string;
 }
 
 export interface EntityL1 extends Entity {
-
+  // No extra fields
 }
 
 export interface EntityL2 extends Entity {
@@ -19,4 +19,12 @@ export interface EntityL2 extends Entity {
 
 export interface EntityL3 extends Entity {
   date: string;
+}
+
+/**
+ * Reference to another entity, which has a relationship with this entity.
+ */
+export interface EntityRef {
+  id: string;
+  type: EntityType;
 }

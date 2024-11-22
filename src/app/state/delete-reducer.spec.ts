@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { deleteReducer } from './delete-reducer';
-import { EntityL1, EntityL2, EntityL3 } from './entity.types';
+import { Entity, EntityL1, EntityL2, EntityL3, EntityRef } from './entity.types';
 import { appInitialState, AppState } from './app.state';
 import { deleteEntitySuccess } from './actions';
 
@@ -11,193 +11,268 @@ describe('deleteReducer', () => {
     initialState = cloneDeep(appInitialState);
   });
 
-  it('should remove a node and its children', () => {
-    const nodeToDelete: EntityL1 = {
+  it('should remove an entity and its children', () => {
+    const entityToDelete: EntityL1 = {
       id: '1',
       type: 'entityL1',
-      childNodeIds: new Set(['1-1', '1-2']),
-      parentId: null,
-      name: 'Node to delete',
+      name: 'Entity to delete',
+      parent: null,
+      children: [
+        { id: '1-1', type: 'entityL2', },
+        { id: '1-2', type: 'entityL2', },
+      ],
     };
-    const nodeToKeep: EntityL1 = {
+    const entityToKeep: EntityL1 = {
       id: '2',
       type: 'entityL1',
-      childNodeIds: new Set(['2-1']),
-      parentId: null,
-      name: 'Node to keep',
+      name: 'Entity to keep',
+      parent: null,
+      children: [
+        { id: '2-1', type: 'entityL2', },
+      ],
     };
 
     const childNodeToDelete: EntityL2 = {
       id: '1-1',
       type: 'entityL2',
-      childNodeIds: new Set([]),
-      parentId: '1',
-      name: 'Child node',
+      name: 'Child entity',
+      parent: { id: '1', type: 'entityL1', },
+      children: [],
       rank: 42,
     };
     const childNodeToDelete2: EntityL2 = {
       id: '1-2',
       type: 'entityL2',
-      childNodeIds: new Set([]),
-      parentId: '1',
-      name: 'Child node 2',
+      name: 'Child entity 2',
+      parent: { id: '1', type: 'entityL1', },
+      children: [],
       rank: 13,
     }
     const childNodeToKeep: EntityL2 = {
       id: '2-1',
       type: 'entityL2',
-      childNodeIds: new Set([]),
-      parentId: '2',
-      name: 'Child node to keep',
+      name: 'Child entity to keep',
+      parent: { id: '2', type: 'entityL1', },
+      children: [],
       rank: 6,
     };
 
-    initialState.entityL1.entities[nodeToDelete.id] = nodeToDelete;
-    initialState.entityL1.entities[nodeToKeep.id] = nodeToKeep;
-    initialState.entityL2.entities[childNodeToDelete.id] = childNodeToDelete;
-    initialState.entityL2.entities[childNodeToDelete2.id] = childNodeToDelete2;
-    initialState.entityL2.entities[childNodeToKeep.id] = childNodeToKeep;
+    addEntityToState(initialState, entityToDelete);
+    addEntityToState(initialState, entityToKeep);
+    addEntityToState(initialState, childNodeToDelete);
+    addEntityToState(initialState, childNodeToDelete2);
+    addEntityToState(initialState, childNodeToKeep);
 
     // when
-    const action = deleteEntitySuccess({ deletedEntity: nodeToDelete });
+    const action = deleteEntitySuccess({ deletedEntity: entityToDelete });
     const newState = deleteReducer(initialState, action);
 
-    // then - nodeToDelete and its children should be removed
-    expect(newState.entityL1.entities[nodeToDelete.id]).toBeUndefined();
+    // then - entityToDelete and its children should be removed
+    expect(newState.entityL1.entities[entityToDelete.id]).toBeUndefined();
     expect(newState.entityL2.entities[childNodeToDelete.id]).toBeUndefined();
     expect(newState.entityL2.entities[childNodeToDelete2.id]).toBeUndefined();
 
     // then - nodeToKeep and its child should still be there
-    expect(newState.entityL1.entities[nodeToKeep.id]).toBeDefined();
+    expect(newState.entityL1.entities[entityToKeep.id]).toBeDefined();
     expect(newState.entityL2.entities[childNodeToKeep.id]).toBeDefined();
   });
 
-  it('should handle deleting a node without children', () => {
-    const nodeToDelete: EntityL1 = {
+  it('should handle deleting an entity without children', () => {
+    const entityToDelete: EntityL1 = {
       id: '1',
       type: 'entityL1',
-      childNodeIds: new Set([]),
-      parentId: null,
-      name: 'Node to delete',
+      name: 'Entity to delete',
+      parent: null,
+      children: [],
     };
 
-    initialState.entityL1.entities['1'] = nodeToDelete;
+    addEntityToState(initialState, entityToDelete);
 
-    const action = deleteEntitySuccess({ deletedEntity: nodeToDelete });
+    const action = deleteEntitySuccess({ deletedEntity: entityToDelete });
     const newState = deleteReducer(initialState, action);
 
     expect(newState.entityL1.entities['1']).toBeUndefined();
   });
 
-  it('should remove a node and its children up to 3 levels deep', () => {
-    const nodeToDelete: EntityL1 = {
+  it('should remove an entity and its children up to 3 levels deep', () => {
+    const entityToDelete: EntityL1 = {
       id: '1',
       type: 'entityL1',
-      childNodeIds: new Set(['1-1']),
-      parentId: null,
-      name: 'Node to delete',
+      name: 'Entity to delete',
+      parent: null,
+      children: [
+        { id: '1-1', type: 'entityL2', },
+      ],
     };
     const childNodeToDelete: EntityL2 = {
       id: '1-1',
       type: 'entityL2',
-      childNodeIds: new Set(['1-1-1']),
-      parentId: '1',
-      name: 'Child node',
+      name: 'Child entity',
+      parent: { id: '1', type: 'entityL1', },
+      children: [
+        { id: '1-1-1', type: 'entityL3', },
+      ],
       rank: 42,
     };
-    const grandChildNodeToDelete: EntityL3 = {
+    const grandChildEntityToDelete: EntityL3 = {
       id: '1-1-1',
       type: 'entityL3',
-      childNodeIds: new Set([]),
-      parentId: '1-1',
-      name: 'Grandchild node',
+      name: 'Grandchild entity',
+      parent: { id: '1-1', type: 'entityL2', },
+      children: [],
       date: '2025-01-01',
     };
 
-    const nodeToKeep: EntityL1 = {
+    const entityToKeep: EntityL1 = {
       id: '2',
       type: 'entityL1',
-      childNodeIds: new Set([]),
-      parentId: null,
-      name: 'Node to keep',
+      name: 'Entity to keep',
+      parent: null,
+      children: [],
     };
 
-    initialState.entityL1.entities[nodeToDelete.id] = nodeToDelete;
-    initialState.entityL2.entities[childNodeToDelete.id] = childNodeToDelete;
-    initialState.entityL3.entities[grandChildNodeToDelete.id] = grandChildNodeToDelete;
-    initialState.entityL1.entities[nodeToKeep.id] = nodeToKeep;
+    addEntityToState(initialState, entityToDelete);
+    addEntityToState(initialState, childNodeToDelete);
+    addEntityToState(initialState, grandChildEntityToDelete);
+    addEntityToState(initialState, entityToKeep);
 
-    const action = deleteEntitySuccess({ deletedEntity: nodeToDelete });
+    const action = deleteEntitySuccess({ deletedEntity: entityToDelete });
     const newState = deleteReducer(initialState, action);
 
     // then - nodeToDelete and its children should be removed
-    expect(newState.entityL1.entities[nodeToDelete.id]).toBeUndefined();
+    expect(newState.entityL1.entities[entityToDelete.id]).toBeUndefined();
     expect(newState.entityL2.entities[childNodeToDelete.id]).toBeUndefined();
-    expect(newState.entityL3.entities[grandChildNodeToDelete.id]).toBeUndefined();
+    expect(newState.entityL3.entities[grandChildEntityToDelete.id]).toBeUndefined();
 
     // then - nodeToKeep should still be there
-    expect(newState.entityL1.entities[nodeToKeep.id]).toBeDefined();
+    expect(newState.entityL1.entities[entityToKeep.id]).toBeDefined();
   });
 
-  it('should handle deleting a node with an invalid child ID', () => {
-    const nodeToDelete: EntityL1 = {
+  it('should handle deleting an entity with an invalid child ID', () => {
+    const entityToDelete: EntityL1 = {
       id: '1',
       type: 'entityL1',
-      childNodeIds: new Set(['1-1']),
-      parentId: null,
-      name: 'Node to delete',
+      name: 'Entity to delete',
+      parent: null,
+      children: [
+        { id: '1-1', type: 'entityL2', },
+      ],
     };
 
-    initialState.entityL1.entities[nodeToDelete.id] = nodeToDelete;
+    addEntityToState(initialState, entityToDelete);
 
     // when
-    const action = deleteEntitySuccess({ deletedEntity: nodeToDelete });
+    const action = deleteEntitySuccess({ deletedEntity: entityToDelete });
     const newState = deleteReducer(initialState, action);
 
-    // then - nodeToDelete is deleted. No exception should be thrown.
-    expect(newState.entityL1.entities[nodeToDelete.id]).toBeUndefined();
+    // then - entityToDelete is deleted. No exception should be thrown.
+    expect(newState.entityL1.entities[entityToDelete.id]).toBeUndefined();
   });
 
-  // test if the childIds of the parent node are updated when a node is deleted
-  // make sure the parentNode has 2 children. Delete one of the children.
-  // expect the parentNode to have only 1 child
-  it('should update the childNodeIds of the parent node when a node is deleted', () => {
-    const parentNode: EntityL1 = {
+  /**
+   * Expect that the entity is removed from the parent {@link Entity#children}.
+   */
+  it('should update the children of the parent node when an entity is deleted', () => {
+    const parent: EntityL1 = {
       id: '1',
       type: 'entityL1',
-      childNodeIds: new Set(['1-1', '1-2']),
-      parentId: null,
-      name: 'Node to delete',
+      name: 'Entity to delete',
+      parent: null,
+      children: [
+        { id: '1-1', type: 'entityL2', },
+        { id: '1-2', type: 'entityL3', },
+        { id: '1-3', type: 'entityL2', },
+      ],
     };
-    const childNodeToDelete: EntityL2 = {
+    const childToDelete: EntityL2 = {
       id: '1-1',
       type: 'entityL2',
-      childNodeIds: new Set([]),
-      parentId: '1',
-      name: 'Child node',
+      name: 'Child entity',
+      parent: { id: '1', type: 'entityL1', },
+      children: [],
       rank: 42,
     };
-    const childNodeToKeep: EntityL2 = {
+    // Child with a different type
+    const childToDelete2: EntityL3 = {
       id: '1-2',
       type: 'entityL2',
-      childNodeIds: new Set([]),
-      parentId: '1',
-      name: 'Child node to keep',
+      name: 'Child entity 2',
+      parent: { id: '1', type: 'entityL1', },
+      children: [],
+      date: '2025-01-01',
+    }
+    const childToKeep: EntityL2 = {
+      id: '1-3',
+      type: 'entityL2',
+      name: 'Child entity to keep',
+      parent: { id: '1', type: 'entityL1', },
+      children: [],
       rank: 42,
     };
 
-    initialState.entityL1.entities[parentNode.id] = parentNode;
-    initialState.entityL2.entities[childNodeToDelete.id] = childNodeToDelete;
-    initialState.entityL2.entities[childNodeToKeep.id] = childNodeToKeep;
+    addEntityToState(initialState, parent);
+    addEntityToState(initialState, childToDelete);
+    addEntityToState(initialState, childToDelete2);
+    addEntityToState(initialState, childToKeep);
 
     // when
-    const action = deleteEntitySuccess({deletedEntity: childNodeToDelete});
+    const action = deleteEntitySuccess({deletedEntity: childToDelete});
     const newState = deleteReducer(initialState, action);
 
-    // then - ID of childNodeToDelete should be removed from the childNodeIds of parentNode
-    const parentNodeUpdated = newState.entityL1.entities[parentNode.id];
-    expect(parentNodeUpdated).toBeDefined();
-    expect(parentNodeUpdated?.childNodeIds).toEqual(new Set([childNodeToKeep.id]));
+    // then - reference to childToDelete should be removed parent.children
+    const parentUpdated = newState.entityL1.entities[parent.id];
+    const expectedChildRefs: EntityRef[] = [
+      {id: childToKeep.id, type: 'entityL2'},
+      {id: childToDelete2.id, type: 'entityL3'},
+    ];
+
+    expect(parentUpdated).toBeDefined();
+    expect(parentUpdated?.children).toEqual(jasmine.arrayContaining(expectedChildRefs));
   });
+
+  it('should remove entity\'s children regardless of type, when deleting an entity', () => {
+    const entityToDelete: EntityL1 = {
+      id: '1',
+      type: 'entityL1',
+      name: 'Entity to delete',
+      parent: null,
+      children: [
+        { id: '1-1', type: 'entityL2' },
+        { id: '1-2', type: 'entityL3' },
+      ],
+    };
+    const childNodeToDelete1: EntityL2 = {
+      id: '1-1',
+      type: 'entityL2',
+      name: 'Child entity 1',
+      parent: { id: '1', type: 'entityL1' },
+      children: [],
+      rank: 42,
+    };
+    const childNodeToDelete2: EntityL3 = {
+      id: '1-2',
+      type: 'entityL3',
+      name: 'Child entity 2',
+      parent: { id: '1', type: 'entityL1' },
+      children: [],
+      date: '2025-01-01',
+    };
+
+    addEntityToState(initialState, entityToDelete);
+    addEntityToState(initialState, childNodeToDelete1);
+    addEntityToState(initialState, childNodeToDelete2);
+
+    const action = deleteEntitySuccess({ deletedEntity: entityToDelete });
+    const newState = deleteReducer(initialState, action);
+
+    // then - entityToDelete and its children should be removed
+    expect(newState.entityL1.entities[entityToDelete.id]).toBeUndefined();
+    expect(newState.entityL2.entities[childNodeToDelete1.id]).toBeUndefined();
+    expect(newState.entityL3.entities[childNodeToDelete2.id]).toBeUndefined();
+  });
+
+  function addEntityToState(state: AppState, entity: Entity): void {
+    state[entity.type].entities[entity.id] = entity;
+  }
 
 });

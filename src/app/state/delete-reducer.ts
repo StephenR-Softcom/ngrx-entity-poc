@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { appInitialState, AppState, EntityType, QuestionState } from './app.state';
-import { EntityConfig, entityConfig } from './entity-config';
+import { entityConfig } from './entity-config';
 import { deleteEntitySuccess } from './actions';
 import { Entity } from './entity.types';
 import { Dictionary, EntityAdapter } from '@ngrx/entity';
@@ -10,9 +10,10 @@ import { Dictionary, EntityAdapter } from '@ngrx/entity';
  */
 export const deleteReducer = createReducer<AppState>(
   appInitialState, // Do we need to define this here too?
+
   on(deleteEntitySuccess, (state, { deletedEntity }) => {
     let newState = state;
-    newState = deleteEntityAndChildren(newState, deletedEntity.type, deletedEntity.id);
+    newState = deleteEntityAndChildren(newState, deletedEntity);
     newState = removeEntityIdFromParent(newState, deletedEntity);
     return newState;
   }),
@@ -22,21 +23,23 @@ export const deleteReducer = createReducer<AppState>(
  * Remove the ID of a deleted entity from its parent's childNodeIds.
  */
 const removeEntityIdFromParent = (state: AppState, deletedEntity: Entity): AppState => {
-  const parentType = entityConfig[deletedEntity.type].parentType;
-  if (!deletedEntity.parentId || !parentType) {
+  const parentRef = deletedEntity.parent;
+  if (!parentRef) {
     // Node has no parent - do nothing
     return state;
   }
-
-  const parentNode = getNodeById(state, parentType, deletedEntity.parentId);
-  if (!parentNode) {
-    console.warn(`Parent node with id '${deletedEntity.parentId}' not found in state`);
+  const parent = getEntityByTypeAndId(state, parentRef.type, parentRef.id);
+  if (!parent) {
+    console.warn(`Parent node with id '${parentRef.id}' not found in state`);
     return state;
   }
 
-  const updatedChildNodeIds: Set<string> = new Set(parentNode.childNodeIds);
-  updatedChildNodeIds.delete(deletedEntity.id);
+  // Remove EntityRef for deleted entity from parent's children
+  parent.children = parent.children.filter(child => child.id !== deletedEntity.id);
+  return state;
 
+  // TODO check if we need the updateOne call - we update in-place, so it should be enough
+  /*
   // Use generic adapter - we do not need to know the exact type
   const adapter = entityConfig[parentType].adapter as EntityAdapter<Entity>;
   return {
@@ -46,51 +49,42 @@ const removeEntityIdFromParent = (state: AppState, deletedEntity: Entity): AppSt
       changes: { childNodeIds: updatedChildNodeIds }
     }, state[parentType])
   };
+   */
 }
 
 /**
  * Delete a node and all its children recursively.
  */
-const deleteEntityAndChildren = (state: AppState, type: EntityType, entityId: string): AppState => {
+const deleteEntityAndChildren = (state: AppState, entity: Entity): AppState => {
   let updatedState = state;
 
-  const node = getNodeById(state, type, entityId);
-  if (!node) {
-    console.warn(`Node with type '${type}' and id '${entityId}' not found in state`);
-    return state;
-  }
 
-  const parentEntityConfig = entityConfig[type] as EntityConfig<Entity>;
-  const childType = parentEntityConfig.childType;
-
-  // Recursively remove child nodes, if any
-  if (childType) {
-    const childNodes = getNodesByIds(state, childType, node.childNodeIds);
-    childNodes.forEach(child => {
-        updatedState = deleteEntityAndChildren(updatedState, childType, child.id);
-    });
+  // Recursively remove child entities, if any
+  for (const childRef of entity.children) {
+    const child = getEntityByTypeAndId(state, childRef.type, childRef.id);
+    if (!child) {
+      console.warn(`Child node with id '${childRef.id}' not found in state`);
+      continue;
+    }
+    updatedState = deleteEntityAndChildren(updatedState, child);
   }
 
   // Remove self
   // Only delete the node *after* all children have been removed, because we need the childNodeIds.
   // Also, deleting bottom-up seems more intuitive.
+
+  const thisEntityConfig = entityConfig.get(entity.type);
+
+  const entitySubState = updatedState[entity.type];
   updatedState = {
     ...updatedState,
-    [type]: parentEntityConfig.adapter.removeOne(node.id, updatedState[type])
+    [entity.type]: thisEntityConfig.adapter.removeOne(entity.id, entitySubState)
   };
 
   return updatedState;
 };
 
-const getNodesByIds = (state: AppState, type: EntityType, ids: Set<string>): Entity[] => {
-  const entityDictionary = getEntitiesOfType(state, type);
-  const idArray = Array.from(ids);
-
-  return idArray.map(id => entityDictionary[id])
-    .filter(node => node !== undefined);
-};
-
-const getNodeById = (state: AppState, type: EntityType, id: string): Entity | undefined => {
+const getEntityByTypeAndId = (state: AppState, type: EntityType, id: string): Entity | undefined => {
   const entityDictionary = getEntitiesOfType(state, type);
   return entityDictionary[id];
 };

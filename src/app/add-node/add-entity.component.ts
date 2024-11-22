@@ -18,7 +18,10 @@ import { generateId } from '../generate-id.util';
 export class AddEntityComponent {
 
   readonly entityType = input.required<EntityType>();
-  readonly parentId = input.required<string>();
+
+  readonly parentType = input.required<EntityType | null>();
+  readonly parentId = input.required<string | null>();
+
   readonly placeholder = input.required<string>();
 
   readonly formGroup = new FormGroup({
@@ -29,22 +32,31 @@ export class AddEntityComponent {
 
   submit() {
     this.formGroup.updateValueAndValidity();
+    if (this.formGroup.invalid) {
+      return;
+    }
 
     const value = this.formGroup.value;
     if (value.name) {
-      this.addNode(value.name);
+      this.addEntity(value.name);
+      this.formGroup.reset();
     }
   }
 
-  addNode(name: string) {
-    const node: Entity = {
+  addEntity(name: string) {
+    const parentId = this.parentId();
+    const parentType = this.parentType();
+    const parentRef = parentId && parentType ? { id: parentId, type: parentType } : null;
+
+    const entity: Entity = {
       id: generateId(),
-      parentId: this.parentId(),
       type: this.entityType(),
       name: name,
-      childNodeIds: new Set(),
+      parent: parentRef,
+      children: []
     };
-    this.store.dispatch(addEntity({ entity: node }));
+
+    this.store.dispatch(addEntity({ entity }));
   }
 
 }

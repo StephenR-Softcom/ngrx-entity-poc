@@ -18,6 +18,7 @@ export const createEntityReducer = <T extends Entity>(
       ...state,
       synced: false,
     })),
+
     on(addEntitySuccess, (state, {entity: addedEntity}) => {
       if (addedEntity.type === config.type) {
         // Possibly add a better type assertion here
@@ -27,30 +28,29 @@ export const createEntityReducer = <T extends Entity>(
           ...config.adapter.addOne(entity, state),
           synced: true,
         };
-      } else if (addedEntity.type === config.childType && addedEntity.parentId) {
-        // A child type entity was added - add the child entity ID to this entity's IDs
-        const entity = state.entities[addedEntity.parentId];
+      }
 
-        if (!entity) {
-          console.warn(`Parent entity not found with type '${config.type}' and ID '${addedEntity.parentId}. Referenced from child entity with ID '${addedEntity.id}'`);
-          return {
-            ...state,
-            synced: true,
-          };
+      const parentRef = addedEntity.parent;
+      if (parentRef && parentRef.type === config.type) {
+        // An entity was added which is linked to this entity. Add it to the child references.
+        const parent = state.entities[parentRef.id];
+
+        if (!parent) {
+          console.warn(`Parent entity not found: type='${parentRef.type}', ID='${parentRef.id}. Referenced from child entity: type='${addedEntity.type}' ID='${addedEntity.id}'`);
+
+          state.synced = true;
+          return state;
         }
 
-        const updatedChildNodeIds: Set<string> = new Set(entity.childNodeIds).add(addedEntity.id);
+        // Add child reference if it does not exist yet
+        if (!parent.children.find(child => child.id === addedEntity.id)) {
+          parent.children.push({ id: addedEntity.id, type: addedEntity.type });
+        }
 
-        // TODO not sure why this assertion is needed, as T extends Entity, which contains childNodeIds
-        const changes: Partial<T> = { childNodeIds: updatedChildNodeIds } as Partial<T>;
-        return {
-          ...state,
-          ...config.adapter.updateOne({
-            id: addedEntity.parentId,
-            changes,
-          }, state)
-        };
+        state.synced = true;
+        return state;
       }
+
       return state;
     }),
 

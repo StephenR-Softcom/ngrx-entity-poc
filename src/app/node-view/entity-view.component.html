@@ -1,0 +1,41 @@
+<li class="list-group-item">
+  <div class="row font-weight-bold">
+    <div class="col-md-1">ID</div>
+    <div class="col-md-3">Name</div>
+    <div class="col-md-1">Parent</div>
+    <div class="col-md-2">Children</div>
+    <div class="col-md-3">Actions</div>
+  </div>
+</li>
+
+@for (entity of entities(); track entity.id) {
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-md-1">
+        <small>{{ entity.id }}</small>
+      </div>
+      <div class="col-md-3">{{ entity.name }}</div>
+      <div class="col-md-1">
+        <small>{{ entity.parent ? entity.parent.id : '-' }}</small>
+      </div>
+      <div class="col-md-2">
+        <ul>
+          @for(childRef of entity.children; track childRef.id) {
+            <li><small>{{ childRef.id }}</small></li>
+          }
+        </ul>
+      </div>
+      <div class="col-md-4 d-flex align-items-start">
+        @if (childType()) {
+          <app-add-entity
+            [entityType]="childType()!"
+            [parentId]="entity.id"
+            [parentType]="entityType()"
+            [placeholder]="'Child entity name'"
+          />
+        }
+        <button class="btn btn-danger ms-1" (click)="deleteEntity(entity)">X</button>
+      </div>
+    </div>
+  </li>
+}

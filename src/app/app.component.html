@@ -5,7 +5,6 @@
     Deletions are cascaded to child entities.
   </span>
 
-
   <div class="row my-4">
     <div class="col-12">
       <button
@@ -19,20 +18,29 @@
     </div>
   </div>
 
-  @for (nodeType of entityViewDefinitions; track nodeType.type) {
+  @for (entityView of entityViewDefinitions; track entityView.type) {
     <div class="card my-4">
     <div class="card-header">
-      <h2>{{ nodeType.name }}</h2>
+      <h2>{{ entityView.name }}</h2>
     </div>
 
     <div class="card-body">
       <ul class="list-group">
-          <app-node-view [nodes]="nodeType.data$ | async" [childType]="nodeType.childType" />
+        <app-entity-view
+          [entityType]="entityView.type"
+          [entities]="entityView.data$ | async"
+          [childType]="entityView.childType"
+        />
       </ul>
     </div>
-    @if (nodeType.type === 'entityL1') {
+    @if (entityView.type === 'entityL1') {
       <div class="card-footer">
-        <app-add-entity [entityType]="'entityL1'" [parentId]="'root'" [placeholder]="'Entity name'" />
+        <app-add-entity
+          [entityType]="'entityL1'"
+          [parentId]="null"
+          [parentType]="null"
+          [placeholder]="'Entity name'"
+        />
       </div>
     }
     </div>

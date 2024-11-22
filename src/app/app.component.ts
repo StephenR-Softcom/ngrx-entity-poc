@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectAllEntityL1Items, selectAllEntityL2Items, selectAllEntityL3Items } from './state/selectors';
 import { Observable } from 'rxjs';
-import { NodeViewComponent } from './node-view/node-view.component';
+import { EntityViewComponent } from './node-view/entity-view.component';
 import { AddEntityComponent } from './add-node/add-entity.component';
 import { EntityType } from './state/app.state';
 import { Entity, EntityL1, EntityL2, EntityL3 } from './state/entity.types';
@@ -22,7 +22,7 @@ type EntityViewDefinition = {
   standalone: true,
   imports: [
     AsyncPipe,
-    NodeViewComponent,
+    EntityViewComponent,
     AddEntityComponent,
   ],
   templateUrl: './app.component.html',

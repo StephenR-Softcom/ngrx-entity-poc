@@ -6,17 +6,23 @@ import { deleteEntity } from '../state/actions';
 import { Entity } from '../state/entity.types';
 
 @Component({
-  selector: 'app-node-view',
+  selector: 'app-entity-view',
   standalone: true,
   imports: [
     AddEntityComponent,
   ],
-  templateUrl: './node-view.component.html',
-  styleUrl: './node-view.component.css'
+  templateUrl: './entity-view.component.html',
+  styleUrl: './entity-view.component.css'
 })
-export class NodeViewComponent {
+export class EntityViewComponent {
 
-  readonly nodes = input.required<Entity[] | null>();
+  readonly entityType = input.required<EntityType>();
+  readonly entities = input.required<Entity[] | null>();
+
+  // TODO provide multiple child types for dropdown menu
+  /**
+   * Child type that may be added to this entity.
+   */
   readonly childType = input.required<EntityType | null>();
 
   private readonly store = inject(Store);
@@ -24,4 +30,5 @@ export class NodeViewComponent {
   deleteEntity(entity: Entity) {
     this.store.dispatch(deleteEntity({ entity }));
   }
+
 }

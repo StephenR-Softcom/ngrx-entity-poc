@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NodeViewComponent } from './node-view.component';
+import { EntityViewComponent } from './entity-view.component';
 
 describe('NodeViewComponent', () => {
-  let component: NodeViewComponent;
-  let fixture: ComponentFixture<NodeViewComponent>;
+  let component: EntityViewComponent;
+  let fixture: ComponentFixture<EntityViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NodeViewComponent]
+      imports: [EntityViewComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NodeViewComponent);
+    fixture = TestBed.createComponent(EntityViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
