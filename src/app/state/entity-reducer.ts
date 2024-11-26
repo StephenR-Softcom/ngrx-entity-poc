@@ -7,6 +7,10 @@ import { Entity } from './entity.types';
 /**
  * Generic reducer for updating entity state.<br>
  * <b>Note:</b> Deletion is handled separately by {@link deleteReducer}, because of delete cascading!
+ *
+ * @param config Configuration for the entity type this reducer handles.
+ * @param initialState Initial state for the entity type this reducer handles.
+ * @param additionalOns (Optional) Additional action handlers to be registered.
  */
 export const createEntityReducer = <T extends Entity>(
   config: EntityConfig<T>,
@@ -19,6 +23,9 @@ export const createEntityReducer = <T extends Entity>(
       synced: false,
     })),
 
+    /**
+     * Add an entity to the state, if it has the entity type of this reducer.
+     */
     on(addEntitySuccess, (state, {entity: addedEntity}) => {
       if (addedEntity.type === config.type) {
         // Possibly add a better type assertion here
@@ -29,7 +36,14 @@ export const createEntityReducer = <T extends Entity>(
           synced: true,
         };
       }
+      return state;
+    }),
 
+    /**
+     * If an entity is added with a parent reference to an entity of this reducer's entity type,
+     * fetch the parent entity and add a child reference for the added entity.
+     */
+    on(addEntitySuccess, (state, {entity: addedEntity}) => {
       const parentRef = addedEntity.parent;
       if (parentRef && parentRef.type === config.type) {
         // An entity was added which is linked to this entity. Add it to the child references.
@@ -42,7 +56,7 @@ export const createEntityReducer = <T extends Entity>(
           return state;
         }
 
-        // Add child reference if it does not exist yet
+        // Add a reference to the newly added child, if it does not exist yet
         if (!parent.children.find(child => child.id === addedEntity.id)) {
           parent.children.push({ id: addedEntity.id, type: addedEntity.type });
         }
@@ -59,5 +73,6 @@ export const createEntityReducer = <T extends Entity>(
       synced: false,
     })),
 
+    // Register any addition action handlers
     ...additionalOns
   );

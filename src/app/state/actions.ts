@@ -1,8 +1,15 @@
 import { createAction, props } from '@ngrx/store';
 import { Entity } from './entity.types';
 
+/**
+ * Action dispatched when a new entity is added through the frontend.
+ */
 export const addEntity = createAction(
   'Add Entity', props<{ entity: Entity }>());
+
+/**
+ * Action dispatched when entity has been added in the backend and was successful.
+ */
 export const addEntitySuccess = createAction(
   'Add Entity - Success', props<{ entity: Entity }>());
 
