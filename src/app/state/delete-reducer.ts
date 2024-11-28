@@ -1,9 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
-import { appInitialState, AppState, QuestionState } from './app.state';
+import { appInitialState, AppState } from './app.state';
 import { entityConfig } from './entity-config';
 import { deleteEntitySuccess } from './actions';
-import { Entity, EntityType } from './entity.types';
-import { Dictionary, EntityAdapter } from '@ngrx/entity';
+import { Entity } from './entity.types';
+import { getEntityByTypeAndId } from './entity-utils';
 
 /**
  * Reducer that handles deleting nodes and their children across all entity types in state.
@@ -37,19 +37,6 @@ const removeEntityIdFromParent = (state: AppState, deletedEntity: Entity): AppSt
   // Remove EntityRef for deleted entity from parent's children
   parent.children = parent.children.filter(child => child.id !== deletedEntity.id);
   return state;
-
-  // TODO check if we need the updateOne call - we update in-place, so it should be enough
-  /*
-  // Use generic adapter - we do not need to know the exact type
-  const adapter = entityConfig[parentType].adapter as EntityAdapter<Entity>;
-  return {
-    ...state,
-    [parentType]: adapter.updateOne({
-      id: parentNode.id,
-      changes: { childNodeIds: updatedChildNodeIds }
-    }, state[parentType])
-  };
-   */
 }
 
 /**
@@ -57,7 +44,6 @@ const removeEntityIdFromParent = (state: AppState, deletedEntity: Entity): AppSt
  */
 const deleteEntityAndChildren = (state: AppState, entity: Entity): AppState => {
   let updatedState = state;
-
 
   // Recursively remove child entities, if any
   for (const childRef of entity.children) {
@@ -70,7 +56,7 @@ const deleteEntityAndChildren = (state: AppState, entity: Entity): AppState => {
   }
 
   // Remove self
-  // Only delete the node *after* all children have been removed, because we need the childNodeIds.
+  // Only delete the node *after* all children have been removed, because we need the child references.
   // Also, deleting bottom-up seems more intuitive.
 
   const thisEntityConfig = entityConfig.get(entity.type);
@@ -84,18 +70,3 @@ const deleteEntityAndChildren = (state: AppState, entity: Entity): AppState => {
   return updatedState;
 };
 
-const getEntityByTypeAndId = (state: AppState, type: EntityType, id: string): Entity | undefined => {
-  const entityDictionary = getEntitiesOfType(state, type);
-  return entityDictionary[id];
-};
-
-/**
- * Retrieve the entities for a given entity type.
- * @returns The entities of the given type, returned as the base {@link Entity} type - they may be cast if necessary.
- */
-const getEntitiesOfType = (state: AppState, type: EntityType): Dictionary<Entity> => {
-  // Access state and adapter using generic type.
-  const entityState: QuestionState<Entity> = state[type];
-  const adapter = entityConfig[type].adapter as EntityAdapter<Entity>;
-  return adapter.getSelectors().selectEntities(entityState);
-};
