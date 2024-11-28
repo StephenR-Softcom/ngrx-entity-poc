@@ -1,6 +1,6 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
-import { Entity, EntityL1, EntityL2, EntityL3, EntityL3Other } from './entity.types';
-import { AppState, EntityType } from './app.state';
+import { Entity, EntityL1, EntityL2, EntityL3, EntityL3Other, EntityType } from './entity.types';
+import { AppState } from './app.state';
 
 /**
  * Define the entity types and their relations.

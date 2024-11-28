@@ -1,4 +1,4 @@
-import { EntityType } from '../state/app.state';
+import { EntityType } from '../state/entity.types';
 
 /**
  * TreeNode is a part of a tree and includes the child nodes, not just their IDs.

@@ -1,0 +1,19 @@
+<a class="btn btn-primary" [routerLink]="'/'">Back to Overview</a>
+<hr>
+
+<div>You are viewing the details of one entity as well as all of its linked child entities.</div>
+<br>
+
+@if(entityType && entityId) {
+
+  <app-entity-details-view
+    [entityType]="entityType"
+    [entityId]="entityId"
+    [collapsed]="false"
+    [level]="0"
+  />
+} @else {
+  <div class="alert alert-danger" role="alert">
+    The entity type or id provided in the URL were incorrect.
+  </div>
+}

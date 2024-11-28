@@ -1,8 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
-import { appInitialState, AppState, EntityType, QuestionState } from './app.state';
+import { appInitialState, AppState, QuestionState } from './app.state';
 import { entityConfig } from './entity-config';
 import { deleteEntitySuccess } from './actions';
-import { Entity } from './entity.types';
+import { Entity, EntityType } from './entity.types';
 import { Dictionary, EntityAdapter } from '@ngrx/entity';
 
 /**

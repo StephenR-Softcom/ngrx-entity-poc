@@ -1,4 +1,14 @@
-import { EntityType } from './app.state';
+import { AppState } from './app.state';
+
+export type EntityType = keyof AppState;
+
+// TODO can we enforce this to be updated for each new entity type?
+export const entityTypeByString: Map<string, EntityType> = new Map([
+  ['entityL1', 'entityL1'],
+  ['entityL2', 'entityL2'],
+  ['entityL3', 'entityL3'],
+  ['entityL3Other', 'entityL3Other'],
+]);
 
 export interface Entity {
   id: string;

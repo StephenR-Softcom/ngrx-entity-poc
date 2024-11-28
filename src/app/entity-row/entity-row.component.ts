@@ -1,20 +1,21 @@
 import { Component, inject, input } from '@angular/core';
-import { EntityType } from '../state/app.state';
 import { AddEntityComponent } from '../add-node/add-entity.component';
 import { Store } from '@ngrx/store';
 import { deleteEntity } from '../state/actions';
-import { Entity } from '../state/entity.types';
+import { Entity, EntityType } from '../state/entity.types';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-entity-view',
+  selector: 'app-entity-row',
   standalone: true,
   imports: [
     AddEntityComponent,
+    RouterLink,
   ],
-  templateUrl: './entity-view.component.html',
-  styleUrl: './entity-view.component.css'
+  templateUrl: './entity-row.component.html',
+  styleUrl: './entity-row.component.css'
 })
-export class EntityViewComponent {
+export class EntityRowComponent {
 
   readonly entityType = input.required<EntityType>();
   readonly entities = input.required<Entity[] | null>();

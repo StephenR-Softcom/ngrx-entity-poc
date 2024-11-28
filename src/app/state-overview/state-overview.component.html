@@ -1,0 +1,42 @@
+<div class="row my-4">
+  <div class="col-12">
+    <button
+      class="btn btn-primary me-2"
+      (click)="createExampleData()"
+      [title]="exampleDataDescription"
+    >
+      Create example data
+    </button>
+    <button class="btn btn-danger" (click)="resetData()">Reset data</button>
+  </div>
+</div>
+
+@for (entityView of entityViewDefinitions; track entityView.type) {
+  <div class="card my-4">
+    <div class="card-header">
+      <h2>{{ entityView.name }}</h2>
+    </div>
+
+    <div class="card-body">
+      <ul class="list-group">
+        <app-entity-row
+          [entityType]="entityView.type"
+          [entities]="entityView.data$ | async"
+          [allowedChildTypes]="entityView.allowedChildTypes"
+        />
+      </ul>
+    </div>
+    @if (entityView.type === 'entityL1') {
+      <div class="card-footer">
+        <div class="col-md-4">
+          <app-add-entity
+            [entityTypes]="['entityL1']"
+            [parentId]="null"
+            [parentType]="null"
+            [placeholder]="'Entity name'"
+          />
+        </div>
+      </div>
+    }
+  </div>
+}

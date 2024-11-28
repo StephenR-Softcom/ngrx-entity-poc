@@ -1,0 +1,62 @@
+@let entity = entity$ | async;
+
+@if (entity) {
+  <div class="card">
+    @let collapsibleId = 'entity-details-' + entity.id;
+    <a [attr.data-bs-toggle]="'collapse'" [href]="'#' + collapsibleId" role="button">
+      <div class="card-header d-flex align-items-center">
+        <h3 class="flex-grow-1">{{ entity.type }}: {{ entity.name }}</h3>
+
+        <span class="float-end">
+          @if (collapseItem.classList.contains('show')) {
+            <i class="bi bi-chevron-up"></i>
+          } @else {
+            <i class="bi bi-chevron-down"></i>
+          }
+        </span>
+      </div>
+    </a>
+    <div
+      #collapseItem
+      class="card-body collapse"
+      [id]="collapsibleId"
+      [class.show]="!collapsed()"
+      [style.background-color]="'rgba(0, 0, 0, ' + (level() * 0.15) + ')'"
+    >
+      <ul>
+        <li>ID: {{ entity.id }}</li>
+        <li>Name: {{ entity.name }}</li>
+        <li># Children: {{ entity.children.length }}</li>
+        <li>
+          @let jsonCollapsibleId = 'entity-json-' + entity.id;
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            [attr.data-bs-toggle]="'collapse'"
+            [attr.data-bs-target]="'#' + jsonCollapsibleId"
+            aria-expanded="false"
+          >
+            Show/hide JSON
+          </button>
+          <div class="collapse border bg-light-subtle" [id]="jsonCollapsibleId">
+            <pre>{{ entity | json }}</pre>
+          </div>
+
+        </li>
+      </ul>
+      @for (child of entity.children; track child.id; let last = $last) {
+        <div [class.mb-1]="!last">
+          <app-entity-details-view
+            [entityType]="child.type"
+            [entityId]="child.id"
+            [collapsed]="true"
+            [level]="level() + 1"
+          />
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="alert alert-warning">
+    <p>No entity found of type '{{entityType()}}' and ID: '{{entityId()}}'.</p>
+  </div>
+}

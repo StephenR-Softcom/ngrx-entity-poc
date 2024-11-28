@@ -2,8 +2,6 @@ import { EntityState } from '@ngrx/entity';
 import { EntityL1, EntityL2, EntityL3, EntityL3Other } from './entity.types';
 import { entityConfig } from './entity-config';
 
-export type EntityType = keyof AppState;
-
 // Our state extends NgRx EntityState, which provides helper functions for managing collections of entities.
 export interface QuestionState<Q> extends EntityState<Q> {
   // Common state fields go here
@@ -15,6 +13,8 @@ export interface AppState {
   entityL2: QuestionState<EntityL2>;
   entityL3: QuestionState<EntityL3>;
   entityL3Other: QuestionState<EntityL3Other>;
+  // TODO add this extra slice and make it work
+  //nonEntityState: { someValue: string }; // just to make sure we can handle extra slices that do not extend EntityState
 }
 
 // ---

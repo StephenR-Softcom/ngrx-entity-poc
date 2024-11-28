@@ -1,9 +1,8 @@
 import { Component, effect, inject, input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { EntityType } from '../state/app.state';
 import { addEntity } from '../state/actions';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Entity } from '../state/entity.types';
+import { Entity, EntityType } from '../state/entity.types';
 import { generateId } from '../generate-id.util';
 
 @Component({

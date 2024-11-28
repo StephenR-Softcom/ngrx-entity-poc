@@ -35,6 +35,7 @@
           />
         }
         <button class="btn btn-danger ms-1" (click)="deleteEntity(entity)">X</button>
+        <a class="btn btn-info" [routerLink]="['/entity', entity.type, entity.id]">Details</a>
       </div>
     </div>
   </li>

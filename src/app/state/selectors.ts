@@ -1,6 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AppState } from './app.state';
 import { entityConfig } from './entity-config';
+import { Entity, EntityType } from './entity.types';
+import { Dictionary } from '@ngrx/entity';
 
 const selectAppState = createFeatureSelector<AppState>('app');
 
@@ -8,6 +10,21 @@ export const selectEntityL1State = createSelector(selectAppState, state => state
 export const selectEntityL2State = createSelector(selectAppState, state => state.entityL2);
 export const selectEntityL3State = createSelector(selectAppState, state => state.entityL3);
 export const selectEntityL3OtherState = createSelector(selectAppState, state => state.entityL3Other);
+
+export const createSelectorForEntityByIdAndType = (entityType: EntityType, id: string) => createSelector(
+  selectAppState,
+  (state: AppState) => {
+    const stateSlice = state[entityType];
+    if (!('entities' in stateSlice)) {
+      console.warn(`Attempted to select entity of type ${entityType}, but it does not exist in the state.`);
+      return undefined;
+    }
+
+    // Expose as the base Entity type. Expect context to know the exact type.
+    const entities: Dictionary<Entity> = stateSlice.entities;
+    return entities[id];
+  }
+);
 
 export const entityL1Adapter = entityConfig.entityL1.adapter;
 export const selectAllEntityL1Items = createSelector(
