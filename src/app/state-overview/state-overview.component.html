@@ -1,16 +1,3 @@
-<div class="row my-4">
-  <div class="col-12">
-    <button
-      class="btn btn-primary me-2"
-      (click)="createExampleData()"
-      [title]="exampleDataDescription"
-    >
-      Create example data
-    </button>
-    <button class="btn btn-danger" (click)="resetData()">Reset data</button>
-  </div>
-</div>
-
 @for (entityView of entityViewDefinitions; track entityView.type) {
   <div class="card my-4">
     <div class="card-header">

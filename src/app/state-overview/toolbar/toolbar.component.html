@@ -1,0 +1,36 @@
+<div class="toolbar bg-light border d-flex my-4 p-2 justify-content-end">
+  <nav class="me-auto d-flex align-items-center">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link link-dark" [routerLink]="'/overview'">Overview</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="d-flex align-items-center me-4 ps-3 border-start">
+    <i class="bi bi-wrench-adjustable me-1"></i> Actions
+  </div>
+  <button
+    class="btn btn-sm btn-primary me-1"
+    (click)="createExampleData()"
+    [title]="exampleDataDescription"
+  >
+    <i class="bi bi-plus-circle"></i> Create example data
+  </button>
+
+  <button
+    class="btn btn-sm btn-secondary me-1"
+    title="Load entity data from JSON"
+    [routerLink]="'/load-json'"
+  >
+    <i class="bi bi-upload"></i> Load JSON Data
+  </button>
+
+  <button
+    class="btn btn-sm btn-danger"
+    (click)="resetData()"
+    title="Remove all entities from state"
+  >
+    <i class="bi bi-trash"></i> Reset data
+  </button>
+
+</div>

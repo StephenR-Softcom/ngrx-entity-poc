@@ -5,7 +5,7 @@ import { addEntity, addEntitySuccess, deleteEntity } from './actions';
 import { Entity } from './entity.types';
 
 /**
- * Generic reducer for updating entity state.<br>
+ * Generic reducer for adding new entities to state.<br>
  * <b>Note:</b> Deletion is handled separately by {@link deleteReducer}, because of delete cascading!
  *
  * @param config Configuration for the entity type this reducer handles.

@@ -25,17 +25,20 @@
           }
         </ul>
       </div>
-      <div class="col-md-4 d-flex align-items-start">
+      <div class="col-md-5 d-flex align-items-center">
         @if (allowedChildTypes()) {
-          <app-add-entity
-            [entityTypes]="allowedChildTypes()!"
-            [parentId]="entity.id"
-            [parentType]="entityType()"
-            [placeholder]="'Child entity name'"
-          />
+          <div class="bg-secondary-subtle p-2 me-2 flex-grow-0">
+            <app-add-entity
+              [entityTypes]="allowedChildTypes()!"
+              [parentId]="entity.id"
+              [parentType]="entityType()"
+              [placeholder]="'Child name'"
+            />
+          </div>
         }
+
+        <a class="btn btn-info me-1" [routerLink]="['/entity', entity.type, entity.id]">Details</a>
         <button class="btn btn-danger ms-1" (click)="deleteEntity(entity)">X</button>
-        <a class="btn btn-info" [routerLink]="['/entity', entity.type, entity.id]">Details</a>
       </div>
     </div>
   </li>

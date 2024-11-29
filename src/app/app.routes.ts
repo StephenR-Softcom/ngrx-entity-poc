@@ -13,6 +13,11 @@ export const routes: Routes = [
     loadComponent: () => import('./entity-details/entity-details.component').then(m => m.EntityDetailsComponent),
   },
   {
+    path: 'load-json',
+    title: 'Load JSON',
+    loadComponent: () => import('./load-json/load-json.component').then(m => m.LoadJsonComponent),
+  },
+  {
     path: '**',
     pathMatch: 'full',
     title: AppComponent.title,

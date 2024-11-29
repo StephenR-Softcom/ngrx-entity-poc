@@ -1,5 +1,12 @@
 import { createAction, props } from '@ngrx/store';
 import { Entity } from './entity.types';
+import { EntityDto } from '../model/dto';
+
+/**
+ * Action dispatched when entities are loaded from the backend in the form of a DTO with nested child entities.
+ */
+export const loadEntitiesFromDto = createAction(
+  'Load Entities from DTO', props<{ entityDto: EntityDto }>());
 
 /**
  * Action dispatched when a new entity is added through the frontend.

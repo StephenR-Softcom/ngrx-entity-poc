@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { ExampleDataService } from '../example-data.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../state/app.state';
 import { Observable } from 'rxjs';
@@ -10,7 +9,6 @@ import {
   selectAllEntityL3Items,
   selectAllEntityL3OtherItems
 } from '../state/selectors';
-import { resetToInitialState } from '../state/actions';
 import { AddEntityComponent } from '../add-node/add-entity.component';
 import { EntityRowComponent } from '../entity-row/entity-row.component';
 import { AsyncPipe } from '@angular/common';
@@ -25,7 +23,6 @@ type EntityViewDefinition = {
   allowedChildTypes: EntityType[] | null,
 };
 
-
 @Component({
   selector: 'app-state-overview',
   standalone: true,
@@ -39,9 +36,6 @@ type EntityViewDefinition = {
 })
 export class StateOverviewComponent {
 
-  protected readonly exampleDataDescription = ExampleDataService.dataDescription;
-
-  private readonly exampleDataService = inject(ExampleDataService);
   private readonly store: Store<AppState> = inject(Store<AppState>);
 
   readonly entityL1Items$: Observable<EntityL1[]> = this.store.select(selectAllEntityL1Items);
@@ -78,17 +72,5 @@ export class StateOverviewComponent {
       allowedChildTypes: null
     },
   ];
-
-  /**
-   * Fill store with example data.
-   */
-  createExampleData(): void {
-    this.exampleDataService.createExampleData();
-  }
-
-  // Reset whole store
-  resetData(): void {
-    this.store.dispatch(resetToInitialState());
-  }
 
 }

@@ -1,0 +1,32 @@
+
+<div class="mb-3">
+  <small>
+    <i class="bi bi-info-circle me-1"></i>
+    <strong>Hint:</strong> See the example JSON below or the <i>dto.ts</i> file for interface definitions.<br>
+    Loading creates new entities, or replaces existing entities if they have the same type and ID.
+  </small>
+</div>
+
+<form [formGroup]="formGroup" (ngSubmit)="loadJsonIntoStore()">
+  @let jsonControl = formGroup.controls.entityDtoJson;
+  <textarea
+    name="json"
+    class="form-control mb-2"
+    rows="15"
+    [class.is-invalid]="jsonControl.invalid"
+    title="Load JSON"
+    [formControl]="jsonControl"
+    placeholder="JSON content representing entityDto with optional children"
+    required
+  ></textarea>
+  <button type="submit" class="btn btn-primary">Load entities</button>
+</form>
+
+@if (entitiesLoadedSuccess) {
+  <div class="alert alert-success mt-2">Entities loaded successfully!</div>
+}
+
+<div class="alert alert-info mt-4">
+  <b>Example JSON:</b>
+  <pre class="small">{{ exampleEntityDto | json }}</pre>
+</div>

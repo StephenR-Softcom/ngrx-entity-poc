@@ -1,14 +1,11 @@
 import { ActionReducer, ActionReducerMap, combineReducers, createReducer, on } from '@ngrx/store';
 import { entityConfig } from './entity-config';
 import { deleteReducer } from './delete-reducer';
-import { createEntityReducer } from './entity-reducer';
+import { createEntityReducer } from './create-entity-reducer';
 import { appInitialState, AppState, } from './app.state';
 import { resetToInitialState } from './actions';
 import { cloneDeep } from 'lodash';
-
-// ---
-// Initial State
-// ---
+import { loadEntityDtoReducer } from './load-entity-dto-reducer';
 
 
 // ---
@@ -35,6 +32,7 @@ const entitySliceReducer = combineReducers(entitySliceReducerMap, appInitialStat
  * The main reducer for the app state.
  */
 const appStateReducers: readonly ActionReducer<AppState>[] = [
+  loadEntityDtoReducer,
   deleteReducer,
   resetToInitialStateReducer,
 ];

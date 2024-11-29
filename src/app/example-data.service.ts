@@ -11,8 +11,9 @@ export class ExampleDataService {
   private readonly store = inject(Store);
 
   public static dataDescription: string = `
-    The example data contains examples for each entity type.
-    It is person data, with relations between them.
+    Add example data to the state.
+    There are examples for each entity type.
+    It is person data, with relations between the entities.
   `;
 
   /**

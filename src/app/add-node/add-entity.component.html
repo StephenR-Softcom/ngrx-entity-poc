@@ -8,9 +8,10 @@
     type="text"
     name="name"
     class="form-control me-2"
+    title="Add a child entity"
     [formControl]="formGroup.controls.name"
     [placeholder]="placeholder()"
     required
   >
-  <button type="submit" class="btn btn-primary">Add</button>
+  <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid">Add</button>
 </form>

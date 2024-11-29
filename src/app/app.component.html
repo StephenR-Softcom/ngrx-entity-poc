@@ -1,11 +1,15 @@
-<div class="container">
-  <h1>{{ title }}</h1>
-  <div>
-    This app shows how ngrx can be used to store entities with relations between each other.
+<div class="container bg-primary bg-gradient p-3 rounded">
+  <h1 class="text-white">{{ title }}</h1>
+</div>
+<div class="container text-muted">
+    This app shows how ngrx can be used to store entities of different types, with relations between each other.
     Deletions are cascaded to child entities.
-  </div>
+</div>
+<div class="container">
+  <app-toolbar />
+</div>
+
+<div class="container">
   <hr>
-
   <router-outlet></router-outlet>
-
 </div>
